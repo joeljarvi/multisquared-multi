@@ -1,4 +1,5 @@
 import type { Case } from "@/app/context/CaseContext";
+import Image from "next/image";
 
 export default function CasesDisplay({ cases }: { cases: Case[] }) {
   if (!cases.length) return <p>No cases found</p>;
@@ -14,11 +15,14 @@ export default function CasesDisplay({ cases }: { cases: Case[] }) {
           {(c.images ?? []).length > 0 && (
             <div className="flex gap-2 overflow-x-auto mt-2">
               {(c.images ?? []).map((img, i) => (
-                <img
+                <Image
                   key={i}
                   src={img}
-                  alt=""
-                  className="w-24 h-24 object-cover rounded"
+                  alt={`Case image ${i + 1}`}
+                  width={96} // 24 * 4 (Tailwind w-24)
+                  height={96} // same as above
+                  className="object-cover rounded"
+                  priority={i === 0} // optionally prioritize the first image
                 />
               ))}
             </div>

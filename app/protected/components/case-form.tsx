@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCaseContext, Case } from "@/app/context/CaseContext";
+import { useCaseContext } from "@/app/context/CaseContext";
 
 export default function CaseForm() {
   const { addCase } = useCaseContext();
@@ -37,8 +37,13 @@ export default function CaseForm() {
       setCategory("");
       setYear("");
       setImages([]);
-    } catch (err: any) {
-      setError(err.message || "Failed to add case");
+    } catch (err: unknown) {
+      // Narrow unknown type to Error
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to add case");
+      }
     } finally {
       setLoading(false);
     }
