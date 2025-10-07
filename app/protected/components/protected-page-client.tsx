@@ -16,7 +16,7 @@ export default function ProtectedPageClient({
 }: Props) {
   return (
     <CaseProvider initialSlug={initialSlug} initialCases={initialCases}>
-      <div className="flex flex-col gap-6 w-full max-w-xl">
+      <div className="flex flex-col gap-6 w-full max-w-xl p-6">
         <h2 className="text-2xl font-bold">Add a new case</h2>
         <CaseForm />
 
