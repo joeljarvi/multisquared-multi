@@ -5,7 +5,7 @@ import CaseClient from "./CaseClient";
 export default async function CasePage({
   params,
 }: {
-  params: { slug: string }; // inline typing
+  params: { slug: string };
 }) {
   const cases: Case[] = await fetchAllCases();
   const currentIndex = cases.findIndex((c) => c.case_slug === params.slug);
