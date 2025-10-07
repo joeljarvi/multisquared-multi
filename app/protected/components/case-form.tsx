@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useCaseContext } from "@/app/context/CaseContext";
-import ImageUpload from "@/components/ImageUpload";
+import MediaUpload from "@/components/ImageUpload";
 
 export default function CaseForm() {
   const { addCase } = useCaseContext();
@@ -13,9 +12,14 @@ export default function CaseForm() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [year, setYear] = useState("");
-  const [images, setImages] = useState<string[]>([]);
+  const [media, setMedia] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleUpload = (urls: string[]) => {
+    // Append new uploads
+    setMedia((prev) => [...prev, ...urls]);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,16 +33,16 @@ export default function CaseForm() {
         description,
         category: category || null,
         year: year || null,
-        images: images.length > 0 ? images : null,
+        images: media.length > 0 ? media : null,
       });
 
-      // Clear form
+      // Reset form
       setTitle("");
       setClient("");
       setDescription("");
       setCategory("");
       setYear("");
-      setImages([]);
+      setMedia([]);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -100,24 +104,17 @@ export default function CaseForm() {
         className="border p-2 rounded"
       />
 
-      {/* Image upload */}
-      <ImageUpload onUpload={(urls) => setImages(urls)} />
+      {/* 🖼️ Media uploader replaces the old text field */}
+      <div>
+        <label className="font-semibold block mb-1">Images / Videos</label>
+        <MediaUpload onUpload={handleUpload} />
 
-      {/* Image previews using next/image */}
-      {images.length > 0 && (
-        <div className="flex gap-2 mt-2 flex-wrap">
-          {images.map((url) => (
-            <div key={url} className="relative w-24 h-24">
-              <Image
-                src={url}
-                alt="Uploaded"
-                fill
-                style={{ objectFit: "cover", borderRadius: "0.25rem" }}
-              />
-            </div>
-          ))}
-        </div>
-      )}
+        {media.length > 0 && (
+          <p className="text-sm text-gray-500 mt-1">
+            {media.length} file{media.length > 1 ? "s" : ""} uploaded
+          </p>
+        )}
+      </div>
 
       <button
         type="submit"

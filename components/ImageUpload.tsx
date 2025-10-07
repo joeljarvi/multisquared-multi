@@ -1,14 +1,14 @@
-// components/ImageUpload.tsx
+// components/MediaUpload.tsx
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
 
-interface ImageUploadProps {
+interface MediaUploadProps {
   onUpload: (urls: string[]) => void;
 }
 
-export default function ImageUpload({ onUpload }: ImageUploadProps) {
+export default function MediaUpload({ onUpload }: MediaUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
@@ -20,24 +20,31 @@ export default function ImageUpload({ onUpload }: ImageUploadProps) {
     const urls: string[] = [];
 
     for (const file of Array.from(files)) {
+      const isVideo = file.type.startsWith("video/");
+      const uploadPreset = isVideo ? "multi2-videos" : "multi2-images"; // your Cloudinary unsigned presets
+      const endpoint = isVideo ? "video" : "image";
+
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", "multi2-images"); // replace with your unsigned preset
+      formData.append("upload_preset", uploadPreset);
 
       try {
         const response = await fetch(
-          `https://api.cloudinary.com/v1_1/de7cgxyxb/image/upload`,
-          { method: "POST", body: formData }
+          `https://api.cloudinary.com/v1_1/de7cgxyxb/${endpoint}/upload`,
+          {
+            method: "POST",
+            body: formData,
+          }
         );
         const data = await response.json();
-        urls.push(data.secure_url);
+        if (data.secure_url) urls.push(data.secure_url);
       } catch (error) {
-        console.error("Error uploading image:", error);
+        console.error("Error uploading media:", error);
       }
     }
 
     setUploading(false);
-    setUploadedUrls(urls);
+    setUploadedUrls((prev) => [...prev, ...urls]);
     onUpload(urls);
   };
 
@@ -46,7 +53,7 @@ export default function ImageUpload({ onUpload }: ImageUploadProps) {
       <input
         type="file"
         multiple
-        accept="image/*"
+        accept="image/*,video/*"
         onChange={handleFileChange}
         disabled={uploading}
       />
@@ -54,7 +61,16 @@ export default function ImageUpload({ onUpload }: ImageUploadProps) {
       <div className="flex gap-2 flex-wrap mt-2">
         {uploadedUrls.map((url) => {
           const key = url.split("/").pop() ?? url;
-          return (
+          const isVideo = url.match(/\.(mp4|mov|webm|ogg)$/i);
+
+          return isVideo ? (
+            <video
+              key={key}
+              src={url}
+              controls
+              className="w-48 h-32 rounded object-cover"
+            />
+          ) : (
             <div key={key} className="relative w-24 h-24">
               <Image
                 src={url}
