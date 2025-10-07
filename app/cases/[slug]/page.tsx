@@ -1,14 +1,11 @@
+// app/cases/[slug]/page.tsx
 import type { Case } from "@/app/context/CaseContext";
 import { fetchAllCases } from "@/lib/supabase/server";
 import CaseClient from "./CaseClient";
 
-type CasePageParams = {
-  slug: string;
-};
-
-type CasePageProps = {
-  params: CasePageParams;
-};
+interface CasePageProps {
+  params: { slug: string };
+}
 
 export default async function CasePage({ params }: CasePageProps) {
   const cases: Case[] = await fetchAllCases();
