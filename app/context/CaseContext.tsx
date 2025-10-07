@@ -32,6 +32,11 @@ interface CaseContextType {
   addCase: (
     newCase: Omit<Case, "id" | "created_at" | "case_slug">
   ) => Promise<void>;
+  updateCase: (
+    id: number,
+    updatedFields: Partial<Omit<Case, "id">>
+  ) => Promise<void>;
+  deleteCase: (id: number) => Promise<void>;
 }
 
 const CaseContext = createContext<CaseContextType | undefined>(undefined);
@@ -106,9 +111,51 @@ export function CaseProvider({
     }
   };
 
+  const updateCase = async (
+    id: number,
+    updatedFields: Partial<Omit<Case, "id">>
+  ) => {
+    try {
+      const { data, error } = await supabase
+        .from("cases")
+        .update(updatedFields)
+        .eq("id", id)
+        .select();
+
+      if (error) throw error;
+
+      setCases((prev) =>
+        prev.map((c) => (c.id === id ? (data?.[0] as Case) : c))
+      );
+    } catch (err: unknown) {
+      console.error("Error updating case:", err);
+    }
+  };
+
+  // Add deleteCase
+  const deleteCase = async (id: number) => {
+    try {
+      const { error } = await supabase.from("cases").delete().eq("id", id);
+      if (error) throw error;
+      setCases((prev) => prev.filter((c) => c.id !== id));
+    } catch (err: unknown) {
+      console.error("Error deleting case:", err);
+    }
+  };
+
   return (
     <CaseContext.Provider
-      value={{ supabase, cases, loading, error, slug, setSlug, addCase }}
+      value={{
+        supabase,
+        cases,
+        loading,
+        error,
+        slug,
+        setSlug,
+        addCase,
+        updateCase,
+        deleteCase,
+      }}
     >
       {children}
     </CaseContext.Provider>
