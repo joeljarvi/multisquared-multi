@@ -72,9 +72,9 @@ export default function CaseClient({ allCases }: CaseClientProps) {
         <div className="grid grid-cols-2 lg:grid-cols-3 w-full min-h-screen items-start justify-start">
           {caseData.images.slice(1).map((url, i) => (
             <CaseMedia
-              src={caseData.images?.[0]}
-              title={caseData.title}
-              aspect="video"
+              key={i}
+              src={url}
+              title={`${caseData.title ?? "Case"} ${i + 2}`}
               autoplay
             />
           ))}
