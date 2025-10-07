@@ -1,13 +1,14 @@
 // app/cases/[slug]/page.tsx
-import type { Case } from "@/app/context/CaseContext";
 import { fetchAllCases } from "@/lib/supabase/server";
 import CaseClient from "./CaseClient";
+import type { Case } from "@/app/context/CaseContext";
 
-interface CasePageProps {
-  params: { slug: string };
-}
-// @ts-expect-error Next.js App Router params typing
-export default async function CasePage({ params }: CasePageProps) {
+// Let Next.js infer the props
+export default async function CasePage({
+  params,
+}: {
+  params: { slug: string }; // keep it typed as normal
+}) {
   const cases: Case[] = await fetchAllCases();
   const currentIndex = cases.findIndex((c) => c.case_slug === params.slug);
 
