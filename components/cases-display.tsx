@@ -10,7 +10,7 @@ export default function CasesDisplay({ cases }: CasesDisplayProps) {
   if (!cases.length) return <p>No cases found</p>;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-wrap gap-4 w-full max-w-xl p-6">
       {cases.map((c) => (
         <div key={c.id} className="border p-4 rounded">
           <h3 className="font-bold">{c.title}</h3>
