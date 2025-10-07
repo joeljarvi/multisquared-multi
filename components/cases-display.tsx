@@ -1,6 +1,6 @@
-// components/CasesDisplay.tsx
 import type { Case } from "@/app/context/CaseContext";
-import Image from "next/image";
+import Link from "next/link";
+import CaseMedia from "./CaseMedia";
 
 interface CasesDisplayProps {
   cases: Case[];
@@ -10,44 +10,41 @@ export default function CasesDisplay({ cases }: CasesDisplayProps) {
   if (!cases.length) return <p>No cases found</p>;
 
   return (
-    <div className="flex flex-wrap gap-4 w-full p-6">
-      {cases.map((c) => (
-        <div key={c.id} className="border p-4 rounded">
-          <h3 className="font-bold">{c.title}</h3>
-          <p className="text-sm font-semibold">{c.client}</p>
-          <p>{c.description}</p>
+    <div className="flex flex-wrap items-start justify-start w-full bg-black">
+      {cases.map((c) => {
+        const firstMedia = (c.images ?? [])[0]; // Only first image/video
 
-          {(c.images ?? []).length > 0 && (
-            <div className="flex gap-2 overflow-x-auto mt-2">
-              {(c.images ?? []).map((url, i) => {
-                const isVideo = url.match(/\.mp4|\.mov|\.webm/i);
-                return (
-                  <div
-                    key={i}
-                    className="relative w-24 h-24 rounded overflow-hidden"
-                  >
-                    {isVideo ? (
-                      <video
-                        src={url}
-                        className="w-full h-full object-cover"
-                        controls
-                      />
-                    ) : (
-                      <Image
-                        src={url}
-                        alt={`Case media ${i + 1}`}
-                        width={96}
-                        height={96}
-                        className="object-cover rounded"
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      ))}
+        return (
+          <div
+            key={c.id}
+            className="w-full lg:w-1/2 aspect-video overflow-hidden group"
+          >
+            <Link
+              href={`/cases/${c.case_slug}`}
+              className="block relative w-full h-full"
+            >
+              {/* Media */}
+              {firstMedia ? (
+                <CaseMedia
+                  src={firstMedia}
+                  alt={c.title ?? "Case media"}
+                  hoverPlay
+                  aspect="video"
+                />
+              ) : (
+                <div className="bg-gray-200 w-full h-full" />
+              )}
+
+              {/* Overlay title */}
+              <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-start justify-start p-4 pointer-events-none">
+                <h3 className=" text-left   text-base px-4 py-2  backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition">
+                  {c.title}
+                </h3>
+              </div>
+            </Link>
+          </div>
+        );
+      })}
     </div>
   );
 }
