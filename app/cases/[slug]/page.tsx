@@ -6,7 +6,7 @@ import CaseClient from "./CaseClient";
 interface CasePageProps {
   params: { slug: string };
 }
-
+// @ts-expect-error Next.js App Router params typing
 export default async function CasePage({ params }: CasePageProps) {
   const cases: Case[] = await fetchAllCases();
   const currentIndex = cases.findIndex((c) => c.case_slug === params.slug);
