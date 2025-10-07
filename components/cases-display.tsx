@@ -1,7 +1,12 @@
+// components/CasesDisplay.tsx
 import type { Case } from "@/app/context/CaseContext";
 import Image from "next/image";
 
-export default function CasesDisplay({ cases }: { cases: Case[] }) {
+interface CasesDisplayProps {
+  cases: Case[];
+}
+
+export default function CasesDisplay({ cases }: CasesDisplayProps) {
   if (!cases.length) return <p>No cases found</p>;
 
   return (
@@ -14,17 +19,31 @@ export default function CasesDisplay({ cases }: { cases: Case[] }) {
 
           {(c.images ?? []).length > 0 && (
             <div className="flex gap-2 overflow-x-auto mt-2">
-              {(c.images ?? []).map((img, i) => (
-                <Image
-                  key={i}
-                  src={img}
-                  alt={`Case image ${i + 1}`}
-                  width={96} // 24 * 4 (Tailwind w-24)
-                  height={96} // same as above
-                  className="object-cover rounded"
-                  priority={i === 0} // optionally prioritize the first image
-                />
-              ))}
+              {(c.images ?? []).map((url, i) => {
+                const isVideo = url.match(/\.mp4|\.mov|\.webm/i);
+                return (
+                  <div
+                    key={i}
+                    className="relative w-24 h-24 rounded overflow-hidden"
+                  >
+                    {isVideo ? (
+                      <video
+                        src={url}
+                        className="w-full h-full object-cover"
+                        controls
+                      />
+                    ) : (
+                      <Image
+                        src={url}
+                        alt={`Case media ${i + 1}`}
+                        width={96}
+                        height={96}
+                        className="object-cover rounded"
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

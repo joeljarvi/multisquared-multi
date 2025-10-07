@@ -1,13 +1,13 @@
 "use client";
-import { useCaseContext } from "@/app/context/CaseContext";
-import type { Case } from "@/app/context/CaseContext";
+
+import { useCaseContext, Case } from "@/app/context/CaseContext";
 import Image from "next/image";
 
-interface CasesListProps {
-  serverCases?: Case[]; // initial server-side data
+interface CaseListProps {
+  serverCases?: Case[];
 }
 
-export default function CasesList({ serverCases = [] }: CasesListProps) {
+export default function CaseList({ serverCases = [] }: CaseListProps) {
   const { cases } = useCaseContext();
 
   // Merge server + client-added cases
@@ -26,21 +26,37 @@ export default function CasesList({ serverCases = [] }: CasesListProps) {
           <p className="text-sm font-semibold">{c.client}</p>
           <p>{c.description}</p>
 
-          {(c.images ?? []).length > 0 && (
+          {c.images?.length ? (
             <div className="flex gap-2 overflow-x-auto mt-2">
-              {(c.images ?? []).map((img, i) => (
-                <Image
-                  key={i}
-                  src={img}
-                  alt={`Case image ${i + 1}`}
-                  width={96} // 24 * 4 (Tailwind w-24)
-                  height={96} // same as above
-                  className="object-cover rounded"
-                  priority={i === 0} // optionally prioritize the first image
-                />
-              ))}
+              {(c.images || []).map((url, i) => {
+                const isVideo = url.match(
+                  /\.mp4|\.mov|\.webm|\/video\/upload/i
+                );
+                const key = url.split("/").pop() ?? i;
+                return (
+                  <div
+                    key={key}
+                    className="relative w-24 h-24 rounded overflow-hidden bg-gray-100"
+                  >
+                    {isVideo ? (
+                      <video
+                        src={url}
+                        className="w-full h-full object-cover"
+                        controls
+                      />
+                    ) : (
+                      <Image
+                        src={url}
+                        alt={`Case media ${i}`}
+                        fill
+                        style={{ objectFit: "cover" }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
-          )}
+          ) : null}
         </div>
       ))}
     </div>

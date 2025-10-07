@@ -22,11 +22,11 @@ export default function MediaUpload({ onUpload }: MediaUploadProps) {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", "multi2-images");
+      formData.append("resource_type", "auto"); // let Cloudinary handle video/image automatically
+
+      const resourceType = file.type.startsWith("video/") ? "video" : "image";
 
       try {
-        // Pick the correct endpoint based on file type
-        const resourceType = file.type.startsWith("video/") ? "video" : "image";
-
         const response = await fetch(
           `https://api.cloudinary.com/v1_1/de7cgxyxb/${resourceType}/upload`,
           { method: "POST", body: formData }
@@ -65,10 +65,11 @@ export default function MediaUpload({ onUpload }: MediaUploadProps) {
         {uploadedUrls.map((url) => {
           const isVideo = url.match(/\.mp4|\.mov|\.webm|\/video\/upload/i);
           const key = url.split("/").pop() ?? url;
+
           return (
             <div
               key={key}
-              className="relative w-24 h-24 rounded overflow-hidden"
+              className="relative w-24 h-24 rounded overflow-hidden bg-gray-100"
             >
               {isVideo ? (
                 <video
