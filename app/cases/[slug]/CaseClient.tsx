@@ -1,21 +1,29 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import CaseMedia from "@/components/CaseMedia";
 import type { Case } from "@/app/context/CaseContext";
 
 interface CaseClientProps {
-  caseData: Case;
   allCases: Case[];
-  currentIndex: number;
 }
 
-export default function CaseClient({
-  caseData,
-  allCases,
-  currentIndex,
-}: CaseClientProps) {
+export default function CaseClient({ allCases }: CaseClientProps) {
+  const { slug } = useParams();
   const router = useRouter();
+
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    const index = allCases.findIndex((c) => c.case_slug === slug);
+    setCurrentIndex(index);
+  }, [slug, allCases]);
+
+  if (currentIndex === null) return <p>Loading...</p>;
+  if (currentIndex === -1) return <p>Case not found</p>;
+
+  const caseData = allCases[currentIndex];
 
   const handlePrev = () => {
     const prevIndex = (currentIndex - 1 + allCases.length) % allCases.length;
@@ -64,9 +72,9 @@ export default function CaseClient({
         <div className="grid grid-cols-2 lg:grid-cols-3 w-full min-h-screen items-start justify-start">
           {caseData.images.slice(1).map((url, i) => (
             <CaseMedia
-              key={i}
-              src={url} // ✅ use 'url' here
-              title={`${caseData.title ?? "Case"} ${i + 2}`} // ✅ use 'title'
+              src={caseData.images?.[0]}
+              title={caseData.title}
+              aspect="video"
               autoplay
             />
           ))}
