@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useCaseContext } from "@/app/context/CaseContext";
-import MediaUpload from "@/components/ImageUpload";
+import MediaUpload from "@/components/MediaUpload";
 
 export default function CaseForm() {
   const { addCase } = useCaseContext();

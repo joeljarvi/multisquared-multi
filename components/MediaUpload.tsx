@@ -1,4 +1,3 @@
-// components/MediaUpload.tsx
 "use client";
 
 import { useState } from "react";
@@ -20,31 +19,34 @@ export default function MediaUpload({ onUpload }: MediaUploadProps) {
     const urls: string[] = [];
 
     for (const file of Array.from(files)) {
-      const isVideo = file.type.startsWith("video/");
-      const uploadPreset = isVideo ? "multi2-videos" : "multi2-images"; // your Cloudinary unsigned presets
-      const endpoint = isVideo ? "video" : "image";
-
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", uploadPreset);
+      formData.append("upload_preset", "multi2-images");
 
       try {
+        // Pick the correct endpoint based on file type
+        const resourceType = file.type.startsWith("video/") ? "video" : "image";
+
         const response = await fetch(
-          `https://api.cloudinary.com/v1_1/de7cgxyxb/${endpoint}/upload`,
-          {
-            method: "POST",
-            body: formData,
-          }
+          `https://api.cloudinary.com/v1_1/de7cgxyxb/${resourceType}/upload`,
+          { method: "POST", body: formData }
         );
+
+        if (!response.ok) {
+          const err = await response.text();
+          console.error("Cloudinary error:", err);
+          throw new Error(`Upload failed for ${file.name}`);
+        }
+
         const data = await response.json();
-        if (data.secure_url) urls.push(data.secure_url);
+        urls.push(data.secure_url);
       } catch (error) {
         console.error("Error uploading media:", error);
       }
     }
 
     setUploading(false);
-    setUploadedUrls((prev) => [...prev, ...urls]);
+    setUploadedUrls(urls);
     onUpload(urls);
   };
 
@@ -58,26 +60,30 @@ export default function MediaUpload({ onUpload }: MediaUploadProps) {
         disabled={uploading}
       />
       {uploading && <p>Uploading...</p>}
+
       <div className="flex gap-2 flex-wrap mt-2">
         {uploadedUrls.map((url) => {
+          const isVideo = url.match(/\.mp4|\.mov|\.webm|\/video\/upload/i);
           const key = url.split("/").pop() ?? url;
-          const isVideo = url.match(/\.(mp4|mov|webm|ogg)$/i);
-
-          return isVideo ? (
-            <video
+          return (
+            <div
               key={key}
-              src={url}
-              controls
-              className="w-48 h-32 rounded object-cover"
-            />
-          ) : (
-            <div key={key} className="relative w-24 h-24">
-              <Image
-                src={url}
-                alt="Uploaded"
-                fill
-                style={{ objectFit: "cover", borderRadius: "0.5rem" }}
-              />
+              className="relative w-24 h-24 rounded overflow-hidden"
+            >
+              {isVideo ? (
+                <video
+                  src={url}
+                  className="w-full h-full object-cover"
+                  controls
+                />
+              ) : (
+                <Image
+                  src={url}
+                  alt="Uploaded media"
+                  fill
+                  style={{ objectFit: "cover" }}
+                />
+              )}
             </div>
           );
         })}
