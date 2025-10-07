@@ -30,3 +30,10 @@ export async function fetchCasesBySlug(slug: string): Promise<Case[]> {
   if (error) throw error;
   return data ?? [];
 }
+
+export async function fetchAllCases(): Promise<Case[]> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.from("cases").select("*");
+  if (error) throw error;
+  return data ?? [];
+}
