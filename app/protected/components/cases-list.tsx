@@ -1,0 +1,44 @@
+"use client";
+import { useCaseContext } from "@/app/context/CaseContext";
+import type { Case } from "@/app/context/CaseContext";
+
+interface CasesListProps {
+  serverCases?: Case[]; // initial server-side data
+}
+
+export default function CasesList({ serverCases = [] }: CasesListProps) {
+  const { cases } = useCaseContext();
+
+  // Merge server + client-added cases
+  const allCases = [
+    ...serverCases,
+    ...cases.filter((c) => !serverCases.find((sc) => sc.id === c.id)),
+  ];
+
+  if (!allCases.length) return <p>No cases found</p>;
+
+  return (
+    <div className="flex flex-col gap-4">
+      {allCases.map((c) => (
+        <div key={c.id} className="border p-4 rounded">
+          <h3 className="font-bold">{c.title}</h3>
+          <p className="text-sm font-semibold">{c.client}</p>
+          <p>{c.description}</p>
+
+          {(c.images ?? []).length > 0 && (
+            <div className="flex gap-2 overflow-x-auto mt-2">
+              {(c.images ?? []).map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt=""
+                  className="w-24 h-24 object-cover rounded"
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
