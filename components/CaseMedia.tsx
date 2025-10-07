@@ -19,6 +19,7 @@ export default function CaseMedia({
   autoplay?: boolean; // ⬅️ optional, false by default
   hoverPlay?: boolean; // ⬅️ enables play on hover
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
   if (!src) {
     return (
       <div
@@ -28,7 +29,7 @@ export default function CaseMedia({
       />
     );
   }
-  const videoRef = useRef<HTMLVideoElement>(null); // ⬅️ define ref
+
   const isVideo = src.match(/\.(mp4|mov|webm)$/i);
 
   const handleMouseEnter = () => {
