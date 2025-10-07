@@ -2,11 +2,15 @@ import type { Case } from "@/app/context/CaseContext";
 import { fetchAllCases } from "@/lib/supabase/server";
 import CaseClient from "./CaseClient";
 
-export default async function CasePage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+type CasePageParams = {
+  slug: string;
+};
+
+type CasePageProps = {
+  params: CasePageParams;
+};
+
+export default async function CasePage({ params }: CasePageProps) {
   const cases: Case[] = await fetchAllCases();
   const currentIndex = cases.findIndex((c) => c.case_slug === params.slug);
 
