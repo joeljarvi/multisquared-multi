@@ -67,9 +67,15 @@ export function CaseProvider({
 
         if (error) throw error;
         setCases(data ?? []);
-      } catch (err: any) {
-        console.error("Supabase fetch error:", err.message);
-        setError(err);
+      } catch (err: unknown) {
+        let errorMessage = "An unexpected error occurred";
+
+        if (err instanceof Error) {
+          errorMessage = err.message;
+        }
+
+        console.error("Supabase fetch error:", errorMessage);
+        setError(new Error(errorMessage));
       } finally {
         setLoading(false);
       }
@@ -90,10 +96,13 @@ export function CaseProvider({
         .select();
 
       if (error) throw error;
+
       setCases((prev) => [...prev, ...(data as Case[])]);
-    } catch (err: any) {
-      console.error("Error adding case:", err.message);
-      throw err;
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred";
+      console.error("Error adding case:", errorMessage);
+      setError(new Error(errorMessage)); // or throw new Error(errorMessage) if you want the caller to handle it
     }
   };
 
