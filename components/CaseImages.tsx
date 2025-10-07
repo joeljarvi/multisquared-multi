@@ -1,22 +1,29 @@
+// components/CaseImages.tsx
 "use client";
 
-import { AdvancedImage } from "@cloudinary/react";
-import { Cloudinary } from "@cloudinary/url-gen";
+import Image from "next/image";
 
 interface CaseImagesProps {
   images: string[];
 }
 
-const cld = new Cloudinary({ cloud: { cloudName: "de7cgxyxb" } });
-
 export default function CaseImages({ images }: CaseImagesProps) {
+  if (!images || images.length === 0) return null;
+
   return (
-    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-      {images.map((imageUrl) => {
-        const imageId = imageUrl.split("/").pop()?.split(".")[0];
-        if (!imageId) return null;
-        const img = cld.image(imageId);
-        return <AdvancedImage key={imageId} cldImg={img} style={{ width: 150, height: 150, objectFit: "cover" }} />;
+    <div className="flex gap-2 flex-wrap">
+      {images.map((url) => {
+        const key = url.split("/").pop() ?? url; // unique key
+        return (
+          <div key={key} className="relative w-36 h-36">
+            <Image
+              src={url}
+              alt="Case image"
+              fill
+              style={{ objectFit: "cover", borderRadius: "0.5rem" }}
+            />
+          </div>
+        );
       })}
     </div>
   );
