@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useCaseContext } from "@/app/context/CaseContext";
+import ImageUpload from "@/components/ImageUpload";
 
 export default function CaseForm() {
   const { addCase } = useCaseContext();
@@ -38,7 +40,6 @@ export default function CaseForm() {
       setYear("");
       setImages([]);
     } catch (err: unknown) {
-      // Narrow unknown type to Error
       if (err instanceof Error) {
         setError(err.message);
       } else {
@@ -99,15 +100,24 @@ export default function CaseForm() {
         className="border p-2 rounded"
       />
 
-      <input
-        type="text"
-        placeholder="Images (comma-separated URLs)"
-        value={images.join(", ")}
-        onChange={(e) =>
-          setImages(e.target.value.split(",").map((i) => i.trim()))
-        }
-        className="border p-2 rounded"
-      />
+      {/* Image upload */}
+      <ImageUpload onUpload={(urls) => setImages(urls)} />
+
+      {/* Image previews using next/image */}
+      {images.length > 0 && (
+        <div className="flex gap-2 mt-2 flex-wrap">
+          {images.map((url) => (
+            <div key={url} className="relative w-24 h-24">
+              <Image
+                src={url}
+                alt="Uploaded"
+                fill
+                style={{ objectFit: "cover", borderRadius: "0.25rem" }}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       <button
         type="submit"
