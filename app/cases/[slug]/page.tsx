@@ -1,4 +1,3 @@
-// app/cases/[slug]/page.tsx
 import type { Case } from "@/app/context/CaseContext";
 import { fetchAllCases } from "@/lib/supabase/server";
 import CaseClient from "./CaseClient";
@@ -6,7 +5,7 @@ import CaseClient from "./CaseClient";
 export default async function CasePage({
   params,
 }: {
-  params: { slug: string };
+  params: { slug: string }; // inline typing
 }) {
   const cases: Case[] = await fetchAllCases();
   const currentIndex = cases.findIndex((c) => c.case_slug === params.slug);
