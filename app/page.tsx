@@ -1,4 +1,3 @@
-import { fetchCasesBySlug } from "@/lib/supabase/server";
 import CasesDisplay from "@/components/cases-display";
 import AuthButton from "@/components/auth-button";
 import { EnvVarWarning } from "@/components/env-var-warning";
