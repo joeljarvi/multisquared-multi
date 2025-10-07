@@ -60,13 +60,13 @@ export default function CaseClient({
         </div>
       </div>
 
-      {caseData.images?.length > 1 && (
+      {caseData.images && caseData.images.length > 1 && (
         <div className="grid grid-cols-2 lg:grid-cols-3 w-full min-h-screen items-start justify-start">
           {caseData.images.slice(1).map((url, i) => (
             <CaseMedia
               key={i}
               src={url} // ✅ use 'url' here
-              alt={`${caseData.title ?? "Case"} ${i + 2}`}
+              title={`${caseData.title ?? "Case"} ${i + 2}`} // ✅ use 'title'
               autoplay
             />
           ))}

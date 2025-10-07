@@ -10,9 +10,10 @@ interface CasePageProps {
 export default async function CasePage({ params }: CasePageProps) {
   const cases: Case[] = await fetchAllCases();
   const currentIndex = cases.findIndex((c) => c.case_slug === params.slug);
-  const caseData = cases[currentIndex];
 
-  if (!caseData) return <p>Case not found</p>;
+  if (currentIndex === -1) return <p>Case not found</p>;
+
+  const caseData = cases[currentIndex];
 
   return (
     <CaseClient

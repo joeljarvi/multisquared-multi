@@ -27,14 +27,13 @@ export default function CasesDisplay({ cases }: CasesDisplayProps) {
               {firstMedia ? (
                 <CaseMedia
                   src={firstMedia}
-                  alt={c.title ?? "Case media"}
+                  title={c.title ?? "Case media"} // ✅ use 'title' prop
                   hoverPlay
                   aspect="video"
                 />
               ) : (
                 <div className="bg-gray-200 w-full h-full" />
               )}
-
               {/* Overlay title */}
               <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-start justify-start p-4 pointer-events-none">
                 <h3 className=" text-left   text-base px-4 py-2  backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition">
