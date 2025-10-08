@@ -14,6 +14,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { toast } from "sonner";
+import Image from "next/image";
 
 const supabase = createClient();
 
@@ -48,9 +49,10 @@ function SortableMediaItem({ img, index, onRemove }: SortableMediaItemProps) {
           preload="metadata"
         />
       ) : (
-        <img
+        <Image
           src={img}
           alt={`Media ${index + 1}`}
+          fill
           className="w-full h-full object-cover"
         />
       )}

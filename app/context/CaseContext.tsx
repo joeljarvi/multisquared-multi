@@ -137,19 +137,15 @@ export function CaseProvider({
     setCases(newOrder);
 
     try {
-      const updates = newOrder.map((c, index) => ({
-        id: c.id,
-        case_order: index, // make sure this matches your DB column
-      }));
+      // Update the case_order for all cases at once
+      const { error } = await supabase.from("cases").upsert(
+        newOrder.map((c, index) => ({
+          id: c.id,
+          case_order: index,
+        }))
+      );
 
-      newOrder.forEach(async (c, i) => {
-        const { error } = await supabase
-          .from("cases")
-          .update({ case_order: i })
-          .eq("id", c.id);
-
-        if (error) throw error;
-      });
+      if (error) throw error;
 
       console.log("Case order updated in Supabase");
     } catch (err: unknown) {
