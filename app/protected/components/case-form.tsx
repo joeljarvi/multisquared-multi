@@ -6,7 +6,7 @@ import MediaUpload from "@/components/MediaUpload";
 
 export default function CaseForm() {
   const { addCase } = useCaseContext();
-
+  const [slug, setSlug] = useState("");
   const [title, setTitle] = useState("");
   const [client, setClient] = useState("");
   const [description, setDescription] = useState("");
@@ -28,6 +28,7 @@ export default function CaseForm() {
 
     try {
       await addCase({
+        case_slug: slug,
         title,
         client,
         description,
@@ -37,6 +38,7 @@ export default function CaseForm() {
       });
 
       // Reset form
+      setSlug("");
       setTitle("");
       setClient("");
       setDescription("");
@@ -60,6 +62,15 @@ export default function CaseForm() {
       className="flex flex-col gap-4 border p-4 rounded"
     >
       {error && <p className="text-red-500">{error}</p>}
+
+      <input
+        type="text"
+        placeholder="Case slug, t.ex bron_abro"
+        value={slug} // ✅ correct
+        onChange={(e) => setSlug(e.target.value)}
+        className="border p-2 rounded"
+        required
+      />
 
       <input
         type="text"
