@@ -18,7 +18,7 @@ export default function ProtectedPageClient({
   return (
     <CaseProvider initialSlug={initialSlug} initialCases={initialCases}>
       <Link
-        className="z-10 fixed top-4 left-4 right-auto lg:right-4 lg:left-auto px-4 py-2 text-base backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition"
+        className="z-10 fixed top-4 right-4 px-4 py-2 text-base backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition"
         href="/"
       >
         Back to home
