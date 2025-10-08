@@ -20,11 +20,13 @@ export interface Case {
   category: string | null;
   year: string | null;
   images: string[] | null;
+  case_order?: number;
 }
 
 interface CaseContextType {
   supabase: SupabaseClient;
   cases: Case[];
+  setCases: React.Dispatch<React.SetStateAction<Case[]>>;
   loading: boolean;
   error: Error | null;
   slug: string;
@@ -35,6 +37,7 @@ interface CaseContextType {
     updatedFields: Partial<Omit<Case, "id">>
   ) => Promise<void>;
   deleteCase: (id: number) => Promise<void>;
+  updateCaseOrder: (newOrder: Case[]) => Promise<void>; // ✅ add this
 }
 
 const CaseContext = createContext<CaseContextType | undefined>(undefined);
@@ -65,7 +68,8 @@ export function CaseProvider({
         const { data, error } = await supabase
           .from("cases")
           .select("*")
-          .eq("case_slug", slug);
+          .eq("case_slug", slug)
+          .order("case_order", { ascending: true });
 
         if (error) throw error;
         setCases(data ?? []);
@@ -128,11 +132,46 @@ export function CaseProvider({
     }
   };
 
+  // ✅ Handle reorder (e.g. drag & drop)
+  const updateCaseOrder = async (newOrder: Case[]) => {
+    setCases(newOrder);
+
+    try {
+      const updates = newOrder.map((c, index) => ({
+        id: c.id,
+        case_order: index, // make sure this matches your DB column
+      }));
+
+      newOrder.forEach(async (c, i) => {
+        const { error } = await supabase
+          .from("cases")
+          .update({ case_order: i })
+          .eq("id", c.id);
+
+        if (error) throw error;
+      });
+
+      console.log("Case order updated in Supabase");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Error updating case order:", err.message);
+      } else if (err && typeof err === "object") {
+        console.error(
+          "Error updating case order:",
+          JSON.stringify(err, null, 2)
+        );
+      } else {
+        console.error("Error updating case order:", err);
+      }
+    }
+  };
+
   return (
     <CaseContext.Provider
       value={{
         supabase,
         cases,
+        setCases,
         loading,
         error,
         slug,
@@ -140,6 +179,7 @@ export function CaseProvider({
         addCase,
         updateCase,
         deleteCase,
+        updateCaseOrder,
       }}
     >
       {children}

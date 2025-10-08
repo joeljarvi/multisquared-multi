@@ -33,7 +33,10 @@ export async function fetchCasesBySlug(slug: string): Promise<Case[]> {
 
 export async function fetchAllCases(): Promise<Case[]> {
   const supabase = await createServerSupabaseClient();
-  const { data, error } = await supabase.from("cases").select("*");
+  const { data, error } = await supabase
+    .from("cases")
+    .select("*")
+    .order("case_order", { ascending: true }); // 👈 sorted by case_order
   if (error) throw error;
   return data ?? [];
 }

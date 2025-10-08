@@ -1,7 +1,6 @@
 import type { Case } from "@/app/context/CaseContext";
 import Link from "next/link";
 import CaseMedia from "./CaseMedia";
-
 interface CasesDisplayProps {
   cases: Case[];
 }
@@ -11,15 +10,8 @@ export default function CasesDisplay({ cases }: CasesDisplayProps) {
 
   return (
     <div className="flex flex-wrap items-start justify-start w-full bg-black">
-      <Link
-        className="z-10 fixed top-4 right-4 px-4 py-2 text-base backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition"
-        href="/protected"
-      >
-        Admin
-      </Link>
       {cases.map((c) => {
-        const firstMedia = (c.images ?? [])[0]; // Only first image/video
-
+        const firstMedia = (c.images ?? [])[0];
         return (
           <div
             key={c.id}
@@ -29,20 +21,18 @@ export default function CasesDisplay({ cases }: CasesDisplayProps) {
               href={`/cases/${c.case_slug}`}
               className="block relative w-full h-full"
             >
-              {/* Media */}
               {firstMedia ? (
                 <CaseMedia
                   src={firstMedia}
-                  title={c.title ?? "Case media"} // ✅ use 'title' prop
+                  title={c.title ?? "Case media"}
                   hoverPlay
                   aspect="video"
                 />
               ) : (
                 <div className="bg-gray-200 w-full h-full" />
               )}
-              {/* Overlay title */}
               <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-start justify-start p-4 pointer-events-none">
-                <h3 className=" text-left   text-base px-4 py-2  backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition">
+                <h3 className="text-left text-base px-4 py-2 backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition">
                   {c.title}
                 </h3>
               </div>
