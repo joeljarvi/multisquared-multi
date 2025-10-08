@@ -29,9 +29,7 @@ interface CaseContextType {
   error: Error | null;
   slug: string;
   setSlug: (slug: string) => void;
-  addCase: (
-    newCase: Omit<Case, "id" | "created_at" | "case_slug">
-  ) => Promise<void>;
+  addCase: (newCase: Omit<Case, "id" | "created_at">) => Promise<void>;
   updateCase: (
     id: number,
     updatedFields: Partial<Omit<Case, "id">>
@@ -89,9 +87,7 @@ export function CaseProvider({
     fetchCases();
   }, [slug, supabase]);
 
-  const addCase = async (
-    newCase: Omit<Case, "id" | "created_at" | "case_slug">
-  ) => {
+  const addCase = async (newCase: Omit<Case, "id" | "created_at">) => {
     if (!slug) throw new Error("No project slug set");
 
     try {
