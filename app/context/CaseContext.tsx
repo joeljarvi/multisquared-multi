@@ -50,17 +50,16 @@ export function CaseProvider({
   initialSlug,
   initialCases,
 }: CaseProviderProps) {
-  const [supabase] = useState<SupabaseClient>(() => createClient());
+  const [supabase] = useState(() => createClient());
   const [cases, setCases] = useState<Case[]>(initialCases ?? []);
   const [slug, setSlug] = useState(initialSlug ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  // Fetch cases whenever slug changes (client-side updates)
   useEffect(() => {
     if (!slug) return;
-
     setLoading(true);
+
     const fetchCases = async () => {
       try {
         const { data, error } = await supabase
@@ -71,14 +70,9 @@ export function CaseProvider({
         if (error) throw error;
         setCases(data ?? []);
       } catch (err: unknown) {
-        let errorMessage = "An unexpected error occurred";
-
-        if (err instanceof Error) {
-          errorMessage = err.message;
-        }
-
-        console.error("Supabase fetch error:", errorMessage);
-        setError(new Error(errorMessage));
+        const message = err instanceof Error ? err.message : "Unexpected error";
+        console.error("Supabase fetch error:", message);
+        setError(new Error(message));
       } finally {
         setLoading(false);
       }
@@ -88,22 +82,18 @@ export function CaseProvider({
   }, [slug, supabase]);
 
   const addCase = async (newCase: Omit<Case, "id" | "created_at">) => {
-    if (!slug) throw new Error("No project slug set");
-
     try {
       const { data, error } = await supabase
         .from("cases")
-        .insert({ ...newCase, case_slug: slug })
+        .insert(newCase)
         .select();
 
       if (error) throw error;
-
       setCases((prev) => [...prev, ...(data as Case[])]);
     } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "An unexpected error occurred";
-      console.error("Error adding case:", errorMessage);
-      setError(new Error(errorMessage)); // or throw new Error(errorMessage) if you want the caller to handle it
+      const message = err instanceof Error ? err.message : "Unexpected error";
+      console.error("Error adding case:", message);
+      setError(new Error(message));
     }
   };
 
@@ -128,7 +118,6 @@ export function CaseProvider({
     }
   };
 
-  // Add deleteCase
   const deleteCase = async (id: number) => {
     try {
       const { error } = await supabase.from("cases").delete().eq("id", id);
