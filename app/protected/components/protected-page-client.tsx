@@ -7,16 +7,12 @@ import type { Case } from "@/app/context/CaseContext";
 import Link from "next/link";
 
 interface Props {
-  initialSlug: string;
   initialCases: Case[];
 }
 
-export default function ProtectedPageClient({
-  initialSlug,
-  initialCases,
-}: Props) {
+export default function ProtectedPageClient({ initialCases }: Props) {
   return (
-    <CaseProvider initialSlug={initialSlug} initialCases={initialCases}>
+    <CaseProvider initialCases={initialCases}>
       <Link
         className="z-10 fixed top-4 right-4 px-4 py-2 text-base backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition"
         href="/"
