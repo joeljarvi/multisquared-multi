@@ -11,6 +11,12 @@ export default function CasesDisplay({ cases }: CasesDisplayProps) {
 
   return (
     <div className="flex flex-wrap items-start justify-start w-full bg-black">
+      <Link
+        className="z-10 fixed top-4 left-4 right-auto lg:right-4 lg:left-auto px-4 py-2 text-base backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition"
+        href="/protected"
+      >
+        Admin
+      </Link>
       {cases.map((c) => {
         const firstMedia = (c.images ?? [])[0]; // Only first image/video
 
