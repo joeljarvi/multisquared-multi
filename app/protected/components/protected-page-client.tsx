@@ -4,6 +4,7 @@ import { CaseProvider } from "@/app/context/CaseContext";
 import CaseForm from "./case-form";
 import CasesList from "./cases-list";
 import type { Case } from "@/app/context/CaseContext";
+import Link from "next/link";
 
 interface Props {
   initialSlug: string;
@@ -16,6 +17,12 @@ export default function ProtectedPageClient({
 }: Props) {
   return (
     <CaseProvider initialSlug={initialSlug} initialCases={initialCases}>
+      <Link
+        className="z-10 fixed top-4 left-4 right-auto lg:right-4 lg:left-auto px-4 py-2 text-base backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition"
+        href="/"
+      >
+        Back to home
+      </Link>
       <div className="flex flex-col gap-6 w-full max-w-xl p-6">
         <h2 className="text-2xl font-bold">Add a new case</h2>
         <CaseForm />
