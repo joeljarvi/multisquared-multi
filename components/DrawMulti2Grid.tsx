@@ -13,6 +13,7 @@ interface Cell {
   drawn: boolean;
   fixed?: boolean;
 }
+const word = ["M", "U", "L", "T", "I", "2"];
 
 export default function DrawMulti2Grid({
   scrollProgress = 0,
@@ -24,8 +25,6 @@ export default function DrawMulti2Grid({
   const [visible, setVisible] = useState(true);
 
   const isDrawing = useRef(false);
-
-  const word = ["M", "U", "L", "T", "I", "2"];
 
   // --- Initialize grid ---
   useEffect(() => {
@@ -163,15 +162,6 @@ export default function DrawMulti2Grid({
   };
 
   const total = grid.cols * grid.rows;
-  const fadeStart = 0; // scroll fraction when fade starts (0 = top)
-  const fadeEnd = 0.15; // scroll fraction when fade fully fades out (15% down the page)
-
-  // Map scrollProgress (0–1) to 1→0 opacity
-  let mappedOpacity = 1;
-  if (scrollProgress > fadeStart) {
-    const t = Math.min((scrollProgress - fadeStart) / (fadeEnd - fadeStart), 1);
-    mappedOpacity = Math.pow(1 - t, 3); // fast fade
-  }
 
   return visible ? (
     <div
