@@ -9,13 +9,13 @@ export default function CasesDisplay({ cases }: CasesDisplayProps) {
   if (!cases.length) return <p>No cases found</p>;
 
   return (
-    <div className="flex flex-wrap items-start justify-start w-full bg-black">
+    <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full bg-white p-4">
       {cases.map((c) => {
         const firstMedia = (c.images ?? [])[0];
         return (
           <div
             key={c.id}
-            className="w-full lg:w-1/2 aspect-video overflow-hidden group"
+            className="col-span-1 aspect-video overflow-hidden group"
           >
             <Link
               href={`/cases/${c.case_slug}`}
@@ -40,6 +40,6 @@ export default function CasesDisplay({ cases }: CasesDisplayProps) {
           </div>
         );
       })}
-    </div>
+    </section>
   );
 }
