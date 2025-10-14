@@ -2,14 +2,10 @@
 
 import Image from "next/image";
 import DrawMulti2Grid from "./DrawMulti2Grid";
-import { Case } from "@/app/context/CaseContext";
+
 import { useState, useEffect } from "react";
 
-interface HeroPageProps {
-  cases: Case[];
-}
-
-export default function HeroPage({ cases }: HeroPageProps) {
+export default function HeroPage() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {

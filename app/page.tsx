@@ -1,6 +1,5 @@
 import CasesDisplay from "@/components/cases-display";
 import { fetchAllCases } from "@/lib/supabase/server";
-import Link from "next/link";
 import HeroPage from "@/components/HeroPage";
 
 export default async function Home() {
@@ -8,7 +7,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen flex flex-col items-center">
-      <HeroPage cases={cases} />
+      <HeroPage />
       <CasesDisplay cases={cases} />
 
       <footer className="w-full flex items-center justify-center text-center text-xs gap-8 py-16">
