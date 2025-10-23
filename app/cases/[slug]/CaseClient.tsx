@@ -22,7 +22,7 @@ function CaseNav({
 }) {
   const router = useRouter();
   return (
-    <div className="fixed top-0 z-40 w-full flex flex-wrap p-0.5 gap-0.5 ">
+    <div className="fixed top-0 z-40 w-screen flex flex-wrap p-0.5 gap-0.5 ">
       {allCases.map((c, i) => {
         const isCurrent = i === currentIndex;
         return (
@@ -88,9 +88,9 @@ export default function CaseClient({ allCases }: CaseClientProps) {
       : [];
 
   // 🔢 Example grid logic for media only
-  const rows = [1, 2, 3, 4, 6, 8, 10];
+  const rows = [1, 2, 3, 4];
   const rowHeight = height / 2;
-  const maxScroll = rows.length * rowHeight;
+  const maxScroll = rows.length * rowHeight * 2;
 
   let mediaCounter = 0;
   console.log(scrollY);
@@ -100,24 +100,25 @@ export default function CaseClient({ allCases }: CaseClientProps) {
       <CaseNav allCases={allCases} currentIndex={currentIndex} />
 
       {/* 1️⃣ Hero */}
-      <section className="relative h-screen w-full">
+      <section className="relative h-screen w-screen">
         {heroImage && (
           <CaseMedia
             src={heroImage}
             title={caseData.title}
             autoplay
-            className="rounded absolute inset-0 w-full h-full object-cover"
+            priority
+            className="rounded absolute inset-0 w-full h-full object-cover lg:object-contain"
           />
         )}
       </section>
 
       {/* 2️⃣ Info section */}
-      <section className="w-full mx-auto py-24 px-6 lg:px-12 flex flex-col items-start justify-center gap-6 font-monumentMedium min-h-screen">
+      <section className="w-full  py-24 px-6 lg:px-12 flex flex-col items-start justify-center gap-6 font-monumentMedium min-h-screen">
         <motion.span
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="flex flex-wrap gap-0.5 items-start justify-start"
+          className="flex flex-wrap gap-0.5 items-start justify-start w-full"
         >
           {categoryWords.map((word, i) => (
             <Badge
@@ -156,18 +157,23 @@ export default function CaseClient({ allCases }: CaseClientProps) {
       </section>
 
       {/* 3️⃣ Media Grid */}
-      <section style={{ height: `${maxScroll}px`, position: "relative" }}>
-        <div className="sticky top-0 h-screen">
-          <div className="absolute inset-0 flex flex-col p-0.5 gap-0.5">
+      <section
+        style={{
+          height: `${maxScroll}px`,
+          position: "relative",
+          width: "100%",
+        }}
+      >
+        <div className="sticky top-0 h-screen w-full">
+          <div className="absolute inset-0 flex flex-col p-0.5 gap-0.5 w-full items-start justify-start ">
             {rows.map((cols, rowIndex) => {
-              const cellWidth = width / cols;
               return (
                 <div
                   key={rowIndex}
-                  className="gap-0.5"
+                  className="gap-0.5 h-[200vh] w-full"
                   style={{
                     display: "grid",
-                    gridTemplateColumns: `repeat(${cols}, ${cellWidth}px)`,
+                    gridTemplateColumns: `repeat(${cols}, 1fr)`,
                   }}
                 >
                   {Array.from({ length: cols }).map((_, i) => {
@@ -175,8 +181,12 @@ export default function CaseClient({ allCases }: CaseClientProps) {
                     return (
                       <div
                         key={i}
-                        className=" overflow-hidden bg-white rounded"
-                        style={{ width: cellWidth, height: rowHeight }}
+                        className=" overflow-hidden bg-white rounded items-center justify-center w-full h-full"
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: `repeat(${cols}, 1fr)`,
+                          gridTemplateRows: `repeat(${rows}, 1fr)`,
+                        }}
                       >
                         {img && (
                           <CaseMedia

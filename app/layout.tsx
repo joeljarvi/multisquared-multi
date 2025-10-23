@@ -35,16 +35,6 @@ const monumentMono = localFont({
   variable: "--font-monumentMono",
 });
 
-const pixelCode = localFont({
-  src: "./font/PixelCode.ttf",
-  variable: "--font-pixelCode",
-});
-
-const pixelCodeThin = localFont({
-  src: "./font/PixelCode-Thin.ttf",
-  variable: "--font-pixelCodeThin",
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -53,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${monument.variable} ${monumentMedium.variable} ${monumentBold.variable} ${monumentMono.variable} ${pixelCode.variable} ${pixelCodeThin.variable} antialiased`}
+        className={`${monument.variable} ${monumentMedium.variable} ${monumentBold.variable} ${monumentMono.variable}  antialiasing`}
       >
         <CaseProvider>
           <ThemeProvider
