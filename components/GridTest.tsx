@@ -51,7 +51,6 @@ export default function ScrollGradientGrid() {
                 }}
               >
                 {Array.from({ length: cols }).map((_, i) => {
-                  const brightness = 0.3 + 0.7 * (rowIndex / totalRows);
                   return (
                     <div
                       key={i}

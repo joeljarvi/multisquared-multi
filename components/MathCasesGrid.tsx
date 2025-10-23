@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Case } from "@/app/context/CaseContext";
-import CaseMedia from "./CaseMedia";
+
 import Link from "next/link";
 
 interface MathCasesGridProps {
@@ -52,7 +52,7 @@ export default function MathCasesGrid({
           </Link>
         </div>
       )),
-    [cases]
+    [cases, bgColors, hoverColors]
   );
 
   return (
@@ -86,7 +86,6 @@ function MathCasesGridWrapper({
 
   useEffect(() => {
     const handleResize = () => {
-      const width = window.innerWidth;
       const cols = 2;
       setCols(cols);
 

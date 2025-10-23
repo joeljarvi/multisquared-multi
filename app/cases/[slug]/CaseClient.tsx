@@ -43,7 +43,7 @@ function CaseNav({
 
 export default function CaseClient({ allCases }: CaseClientProps) {
   const { slug } = useParams();
-  const router = useRouter();
+
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [scrollY, setScrollY] = useState(0);

@@ -31,7 +31,7 @@ export default function MathTitle() {
     updateLayout();
     window.addEventListener("resize", updateLayout);
     return () => window.removeEventListener("resize", updateLayout);
-  }, []);
+  }, [layoutDesktop, layoutMobile]);
 
   // Total cells = sum of all row lengths
   const TOTAL_CELLS = layout.reduce((a, b) => a + b, 0);
@@ -43,7 +43,7 @@ export default function MathTitle() {
         return bgColors[idx];
       })
     );
-  }, [layout]);
+  }, [layout, TOTAL_CELLS]);
 
   // Split WORD across cells
   const filledCells = WORD.split("");
