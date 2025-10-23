@@ -38,7 +38,7 @@ export default function HeroPage({ cases }: HeroPageProps) {
 
         <section
           id="contact"
-          className="relative z-0 w-full h-screen  flex flex-col items-start justify-start lg:items-start lg:justify-center bg-black px-12 py-24 gap-12 text-6xl  font-monumentMedium text-white tracking-wide leading-tight"
+          className="relative z-0 w-full h-screen  flex flex-col items-start justify-start lg:items-start lg:justify-center bg-black px-12 py-24 gap-12 text-3xl lg:text-6xl  font-monumentMedium text-white tracking-wide leading-tight"
         >
           <h2 className="max-w-3xl">Talk to us about your next project!</h2>
           <div className="flex flex-col gap-0">
