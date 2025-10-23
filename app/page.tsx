@@ -1,18 +1,16 @@
-import CasesDisplay from "@/components/cases-display";
 import { fetchAllCases } from "@/lib/supabase/server";
 import HeroPage from "@/components/HeroPage";
+import FloatingNav from "@/components/FloatingNav";
 
 export default async function Home() {
   const cases = await fetchAllCases();
 
   return (
-    <main className="min-h-screen flex flex-col items-center">
-      <HeroPage />
-      <CasesDisplay cases={cases} />
-
-      <footer className="w-full flex items-center justify-center text-center text-xs gap-8 py-16">
-        <p>multisquared © {new Date().getFullYear()}</p>
-      </footer>
-    </main>
+    <>
+      <FloatingNav />
+      <main className="min-h-screen flex flex-col items-center">
+        <HeroPage cases={cases} />
+      </main>
+    </>
   );
 }

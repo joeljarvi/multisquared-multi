@@ -10,6 +10,15 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        monument: "var(--font-monument)",
+        monumentMedium: "var(--font-monumentMedium)",
+        monumentBold: "var(--font-monumentBold)",
+        monumentMono: "var(--font-monumentMono)",
+        pixelCode: "var(--font-pixelCode)",
+        pixelCodeThin: "var(--font-pixelCodeThin)",
+      },
+
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

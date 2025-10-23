@@ -1,18 +1,52 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 import CaseMedia from "@/components/CaseMedia";
 import type { Case } from "@/app/context/CaseContext";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 interface CaseClientProps {
   allCases: Case[];
 }
 
+function CaseNav({
+  allCases,
+  currentIndex,
+}: {
+  allCases: Case[];
+  currentIndex: number;
+}) {
+  const router = useRouter();
+  return (
+    <div className="fixed top-0 z-40 w-full flex flex-wrap p-0.5 gap-0.5 ">
+      {allCases.map((c, i) => {
+        const isCurrent = i === currentIndex;
+        return (
+          <Button key={i} size="sm" variant={isCurrent ? "default" : "ghost"}>
+            <Link href={`/cases/${c.case_slug}`}>{c.title}</Link>
+          </Button>
+        );
+      })}
+      <Button size="sm" variant="ghost" onClick={() => router.back()}>
+        Back
+      </Button>
+      <Button size="sm" variant="ghost" onClick={() => router.push("/")}>
+        Home
+      </Button>
+    </div>
+  );
+}
+
 export default function CaseClient({ allCases }: CaseClientProps) {
   const { slug } = useParams();
   const router = useRouter();
-
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -20,83 +54,146 @@ export default function CaseClient({ allCases }: CaseClientProps) {
     setCurrentIndex(index);
   }, [slug, allCases]);
 
+  useEffect(() => {
+    const updateSize = () => {
+      setWidth(window.innerWidth);
+      setHeight(window.innerHeight);
+    };
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   if (currentIndex === null) return <p>Loading...</p>;
   if (currentIndex === -1) return <p>Case not found</p>;
 
   const caseData = allCases[currentIndex];
+  const images = caseData?.images || [];
+  const heroImage = images[0];
 
-  const handlePrev = () => {
-    const prevIndex = (currentIndex - 1 + allCases.length) % allCases.length;
-    router.push(`/cases/${allCases[prevIndex].case_slug}`);
-  };
+  if (!width || !height) return null;
 
-  const handleNext = () => {
-    const nextIndex = (currentIndex + 1) % allCases.length;
-    router.push(`/cases/${allCases[nextIndex].case_slug}`);
-  };
+  // 🪄 Clean category handling
+  const categoryWords =
+    typeof caseData.category === "string"
+      ? caseData.category.replace(/,/g, "").split(" ")
+      : Array.isArray(caseData.category)
+      ? caseData.category
+      : [];
+
+  // 🔢 Example grid logic for media only
+  const rows = [1, 2, 3, 4, 6, 8, 10];
+  const rowHeight = height / 2;
+  const maxScroll = rows.length * rowHeight;
+
+  let mediaCounter = 0;
 
   return (
-    <div className="flex flex-col items-center justify-start mx-auto">
-      <button
-        className="z-10 fixed top-4 left-4 right-auto lg:right-4 lg:left-auto px-4 py-2 text-base backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition"
-        onClick={() => router.push("/")}
-      >
-        Back to home
-      </button>
-      {/* ✅ Server-rendered media (image or video) */}
-      <CaseMedia
-        src={caseData.images?.[0]}
-        title={caseData.title ?? "Case"}
-        aspect="video"
-        autoplay
-      />
+    <>
+      <CaseNav allCases={allCases} currentIndex={currentIndex} />
 
-      {/* ✅ Case text content */}
+      {/* 1️⃣ Hero */}
+      <section className="relative h-screen w-full">
+        {heroImage && (
+          <CaseMedia
+            src={heroImage}
+            title={caseData.title}
+            autoplay
+            className="rounded absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+      </section>
 
-      <div className="z-10 fixed bottom-0 left-0 w-full max-w-full lg:max-w-[calc(100vw/3)] p-4 ">
-        <div className="flex flex-col items-start justify-start backdrop-blur-sm bg-gray-50/50 p-4 rounded uppercase ">
-          <h1 className=" font-bold text-2xl lg:text-3xl  w-full mb-4 lg:mb-2">
-            {caseData.title}
-          </h1>
-          <p className="text-sm font-semibold  w-full mb-4">
-            {caseData.client}
-          </p>
-
-          <p className="whitespace-pre-line mb-4 ">{caseData.description}</p>
-          <p className="whitespace-pre-line  text-sm">{caseData.category}</p>
-          <p className="whitespace-pre-line text:sm ">{caseData.year}</p>
-        </div>
-      </div>
-
-      {caseData.images && caseData.images.length > 1 && (
-        <div className="grid grid-cols-2 lg:grid-cols-3 w-full min-h-screen items-start justify-start">
-          {caseData.images.slice(1).map((url, i) => (
-            <CaseMedia
+      {/* 2️⃣ Info section */}
+      <section className="w-full mx-auto py-24 px-6 lg:px-12 flex flex-col items-start justify-center gap-6 font-monumentMedium min-h-screen">
+        <motion.span
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-wrap gap-0.5 items-start justify-start"
+        >
+          {categoryWords.map((word, i) => (
+            <Badge
               key={i}
-              src={url}
-              title={`${caseData.title ?? "Case"} ${i + 2}`}
-              autoplay
-            />
+              variant="outline"
+              className="mt-3 text-black border-black "
+            >
+              {word}
+            </Badge>
           ))}
+        </motion.span>
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className=" leading-snug text-neutral-700 "
+        >
+          {caseData.description}
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className=" leading-snug text-neutral-500 "
+        >
+          {caseData.credits}
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className=" leading-snug text-neutral-500 "
+        >
+          {caseData.year}
+        </motion.p>
+      </section>
+
+      {/* 3️⃣ Media Grid */}
+      <section style={{ height: `${maxScroll}px`, position: "relative" }}>
+        <div className="sticky top-0 h-screen">
+          <div className="absolute inset-0 flex flex-col p-0.5 gap-0.5">
+            {rows.map((cols, rowIndex) => {
+              const cellWidth = width / cols;
+              return (
+                <div
+                  key={rowIndex}
+                  className="gap-0.5"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: `repeat(${cols}, ${cellWidth}px)`,
+                  }}
+                >
+                  {Array.from({ length: cols }).map((_, i) => {
+                    const img = images[mediaCounter++ % images.length];
+                    return (
+                      <div
+                        key={i}
+                        className=" overflow-hidden bg-white rounded"
+                        style={{ width: cellWidth, height: rowHeight }}
+                      >
+                        {img && (
+                          <CaseMedia
+                            src={img}
+                            title={caseData.title}
+                            autoplay
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      )}
-
-      {/* ✅ Navigation */}
-
-      <div className="z-10 fixed top-4 right-4 lg:bottom-4 lg:top-auto flex gap-4">
-        <button
-          className="px-4 py-2 text-base backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition"
-          onClick={handlePrev}
-        >
-          Previous
-        </button>
-        <button
-          className="px-4 py-2 text-base backdrop-blur-sm bg-gray-50/50 rounded hover:bg-gray-300 transition"
-          onClick={handleNext}
-        >
-          Next
-        </button>
-      </div>
-    </div>
+      </section>
+    </>
   );
 }

@@ -5,29 +5,25 @@ import Image from "next/image";
 import { useRef } from "react";
 
 export default function CaseMedia({
+  className = "",
   src,
   title,
-  aspect = "video", // "video" or "square"
+
   priority = false,
   autoplay = false, // ⬅️ optional, false by default
   hoverPlay = false, // ⬅️ enables play on hover
 }: {
+  className?: string;
   src?: string | null;
   title?: string | null;
-  aspect?: "video" | "square";
+
   priority?: boolean;
   autoplay?: boolean; // ⬅️ optional, false by default
   hoverPlay?: boolean; // ⬅️ enables play on hover
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   if (!src) {
-    return (
-      <div
-        className={`bg-gray-200 w-full ${
-          aspect === "square" ? "aspect-square" : "aspect-video"
-        } rounded`}
-      />
-    );
+    return <div className={`bg-gray-200 w-full  rounded`} />;
   }
 
   const isVideo = src.match(/\.(mp4|mov|webm)$/i);
@@ -45,9 +41,8 @@ export default function CaseMedia({
 
   return (
     <div
-      className={`relative w-full overflow-hidden max-h-screen ${
-        aspect === "square" ? "aspect-square" : "aspect-video"
-      }`}
+      className={`relative  overflow-hidden max-h-screen 
+      } ${className}`}
     >
       {isVideo ? (
         <video

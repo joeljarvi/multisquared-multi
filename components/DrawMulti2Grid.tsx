@@ -29,7 +29,9 @@ export default function DrawMulti2Grid({
   // --- Initialize grid ---
   useEffect(() => {
     const updateGrid = () => {
-      const cellSize = 50;
+      const base = Math.min(window.innerWidth, window.innerHeight);
+      const cellSize = base * 0.05; // each cell = 5% of viewport
+
       const cols = Math.floor(window.innerWidth / cellSize);
       const rows = Math.floor(window.innerHeight / cellSize);
       const total = cols * rows;
@@ -165,43 +167,66 @@ export default function DrawMulti2Grid({
 
   return visible ? (
     <div
-      className="fixed inset-0 z-10 flex flex-wrap"
+      className="fixed z-10 flex flex-wrap"
       onPointerUp={handlePointerUp}
-      style={{ userSelect: "none" }}
+      style={{
+        userSelect: "none",
+      }}
     >
       {cells.slice(0, total).map((cell, i) => {
         const baseBg = cell.drawn ? "white" : "black";
 
-        const fadeStart = 0.01; // small scroll fraction to trigger fade
-        const fadeEnd = 0.15; // fully faded at 15% scroll
+        const mappedOpacity = (() => {
+          // fade ranges
+          const drawnFadeStart = 0.01;
+          const drawnFadeEnd = 0.1;
+          const undrawnFadeStart = 0.06;
+          const undrawnFadeEnd = 0.2;
 
-        const mappedOpacity =
-          scrollProgress <= fadeStart
-            ? 1
-            : Math.pow(
-                1 -
-                  Math.min(
-                    (scrollProgress - fadeStart) / (fadeEnd - fadeStart),
-                    1
-                  ),
-                3
-              );
-        const opacity = cell.drawn ? mappedOpacity : 1;
+          if (cell.drawn) {
+            // drawn cells fade first
+            if (scrollProgress <= drawnFadeStart) return 1;
+            return Math.pow(
+              1 -
+                Math.min(
+                  (scrollProgress - drawnFadeStart) /
+                    (drawnFadeEnd - drawnFadeStart),
+                  1
+                ),
+              3
+            );
+          } else {
+            // undrawn cells fade after drawn ones
+            if (scrollProgress <= undrawnFadeStart) return 1;
+            return Math.pow(
+              1 -
+                Math.min(
+                  (scrollProgress - undrawnFadeStart) /
+                    (undrawnFadeEnd - undrawnFadeStart),
+                  1
+                ),
+              3
+            );
+          }
+        })();
+
         const textColor = cell.drawn ? "black" : "white";
         const isCloseButton = i === grid.cols - 1 && grid.rows > 0;
+
+        const opacity = isCloseButton ? 1 : mappedOpacity;
 
         return (
           <motion.div
             key={i}
-            className={`aspect-square flex items-center justify-center border-none ${
+            className={`aspect-square flex items-center justify-center border-none font-monument ${
               isCloseButton ? "cursor-pointer z-20" : "cursor-crosshair"
             }`}
             style={{
               width: `${100 / grid.cols}vw`,
-              backgroundColor: isCloseButton ? "red" : baseBg,
-              color: isCloseButton ? "white" : textColor,
+              backgroundColor: isCloseButton ? baseBg : baseBg,
+              color: isCloseButton ? textColor : textColor,
               fontSize: "1rem",
-              fontFamily: "sans-serif",
+
               opacity: isCloseButton ? 1 : opacity,
               transition: "opacity 0.15s, transform 0.1s",
             }}

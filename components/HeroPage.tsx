@@ -1,41 +1,68 @@
 "use client";
 
-import Image from "next/image";
-import DrawMulti2Grid from "./DrawMulti2Grid";
+import MathCasesGrid from "./MathCasesGrid";
+import { Case } from "@/app/context/CaseContext";
 
-import { useState, useEffect } from "react";
+import Link from "next/link";
+import ScrollGradientGrid from "./GridTest";
 
-export default function HeroPage() {
-  const [scrollProgress, setScrollProgress] = useState(0);
+interface HeroPageProps {
+  cases: Case[];
+}
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const maxScroll = document.body.scrollHeight - window.innerHeight;
-      setScrollProgress(Math.min(window.scrollY / maxScroll, 1));
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // image fades in slightly after scroll starts
-  const imageOpacity = Math.max((scrollProgress - 0.05) * 10, 0);
-
+export default function HeroPage({ cases }: HeroPageProps) {
   return (
-    <section className="relative w-full h-screen flex flex-col items-center justify-center p-4 overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="https://res.cloudinary.com/de7cgxyxb/image/upload/v1759906853/oalxsojbpf0jgbhcqizp.jpg"
-          alt="Jureskog"
-          fill
-          priority
-          className="object-cover w-full h-full transition-opacity duration-700 ease-out"
-          style={{ opacity: imageOpacity }}
-        />
-      </div>
+    <>
+      <div className="relative w-full">
+        {/* ------------------- Hero Section ------------------- */}
+        <section
+          id="hero"
+          className="relative w-full"
+          style={{ height: "300vh" }}
+        >
+          {/* Sticky grid container */}
+          <div className="sticky top-0 h-screen overflow-hidden z-10">
+            <ScrollGradientGrid />
+          </div>
+        </section>
+        <div className="h-screen flex flex-col  items-start justify-start lg:justify-center bg-black text-white font-monumentMedium text-3xl px-12 py-24 tracking-wide">
+          <h2 className=" max-w-3xl ">
+            MULTI2 is a multi-disciplinary creative agency based in Stockholm.
+            Founded in 2025 by multi-talented Adam and Daniel
+          </h2>
+        </div>
 
-      <div className="absolute inset-0 z-10">
-        <DrawMulti2Grid scrollProgress={scrollProgress} />
+        <section id="cases" className="relative z-10 w-full h-screen ">
+          <MathCasesGrid cases={cases} />
+        </section>
+
+        <section
+          id="contact"
+          className="relative z-0 w-full h-screen  flex flex-col items-start justify-start lg:items-start lg:justify-center bg-black px-12 py-24 gap-12 text-6xl  font-monumentMedium text-white tracking-wide leading-tight"
+        >
+          <h2 className="max-w-3xl">Talk to us about your next project!</h2>
+          <div className="flex flex-col gap-0">
+            <span className=" space-x-4 w-full flex lg:flex-row">
+              <h2 className="uppercase">Adam:</h2>
+              <Link href="/" className="link">
+                070 123 4567
+              </Link>
+            </span>
+            <span className="space-x-4 w-full flex lg:flex-row">
+              <h2 className="uppercase">Daniel:</h2>
+              <Link href="/" className="link">
+                070 123 4567
+              </Link>
+            </span>
+            <span className=" space-x-4 w-full flex lg:flex-row">
+              <h2 className="uppercase">Email:</h2>
+              <Link href="/" className="link">
+                hello@multi2.co
+              </Link>
+            </span>
+          </div>
+        </section>
       </div>
-    </section>
+    </>
   );
 }

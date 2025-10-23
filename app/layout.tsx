@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
 import { CaseProvider } from "./context/CaseContext";
 import "./globals.css";
@@ -11,14 +11,38 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "MULTI2",
+  description: "what is 1 + 1 ?",
 };
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  display: "swap",
-  subsets: ["latin"],
+const monument = localFont({
+  src: "./MonumentGrotesk-Regular.otf",
+  variable: "--font-monument",
+});
+
+const monumentMedium = localFont({
+  src: "./MonumentGrotesk-Medium.otf",
+  variable: "--font-monumentMedium",
+});
+
+const monumentBold = localFont({
+  src: "./MonumentGrotesk-Bold.otf",
+  variable: "--font-monumentBold",
+});
+
+const monumentMono = localFont({
+  src: "./MonumentGrotesk-Mono.otf",
+  variable: "--font-monumentMono",
+});
+
+const pixelCode = localFont({
+  src: "./font/PixelCode.ttf",
+  variable: "--font-pixelCode",
+});
+
+const pixelCodeThin = localFont({
+  src: "./font/PixelCode-Thin.ttf",
+  variable: "--font-pixelCodeThin",
 });
 
 export default function RootLayout({
@@ -28,7 +52,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.className} antialiased`}>
+      <body
+        className={`${monument.variable} ${monumentMedium.variable} ${monumentBold.variable} ${monumentMono.variable} ${pixelCode.variable} ${pixelCodeThin.variable} antialiased`}
+      >
         <CaseProvider>
           <ThemeProvider
             attribute="class"

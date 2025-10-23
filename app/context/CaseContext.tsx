@@ -21,6 +21,7 @@ export interface Case {
   year: string | null;
   images: string[] | null;
   case_order?: number;
+  credits?: string;
 }
 
 interface CaseContextType {
