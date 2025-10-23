@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, useInView } from "framer-motion";
 
 const WORD = "MULTISQUARED";
@@ -18,8 +18,8 @@ export default function MathTitle() {
 
   const [cellBgClasses, setCellBgClasses] = useState<string[]>([]);
 
-  const layoutDesktop = [4, 5, 6];
-  const layoutMobile = [3, 5, 3];
+  const layoutDesktop = useMemo(() => [4, 5, 6], []);
+  const layoutMobile = useMemo(() => [3, 5, 3], []);
 
   // Pick which layout to use
   const [layout, setLayout] = useState<number[]>(layoutMobile);

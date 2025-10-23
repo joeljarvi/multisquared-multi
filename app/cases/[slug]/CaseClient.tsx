@@ -93,6 +93,7 @@ export default function CaseClient({ allCases }: CaseClientProps) {
   const maxScroll = rows.length * rowHeight;
 
   let mediaCounter = 0;
+  console.log(scrollY);
 
   return (
     <>
