@@ -47,7 +47,7 @@ export default function MathCasesGridWrapper({
     });
 
     return () => timers.forEach((t) => clearTimeout(t));
-  }, [width, items.length, staggerDelay, cells.length]);
+  }, [width, items.length, staggerDelay, cells.length, minCellSize]);
 
   return (
     <div className="w-full flex flex-wrap relative">

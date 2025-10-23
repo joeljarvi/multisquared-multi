@@ -5,27 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/button";
 
 export default function FloatingNav() {
-  const [sectionIndex, setSectionIndex] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const vh = window.innerHeight;
-
-      // define scroll sections
-      let index = 0;
-      if (scrollY < vh) index = 0; // hero
-      else if (scrollY < vh * 2) index = 1; // cases
-      else index = 2; // contact
-
-      setSectionIndex(index);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const box1Label = "M2";
 
