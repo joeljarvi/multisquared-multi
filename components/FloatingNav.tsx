@@ -20,7 +20,7 @@ export default function FloatingNav() {
   return (
     <>
       {/* Floating top/bottom nav */}
-      <div className="fixed bottom-0 left-0 lg:top-0 lg:bottom-auto z-40 w-full flex justify-center items-baseline flex-wrap font-monumentMedium text-2xl lg:text-6xl p-0.5 gap-0.5">
+      <div className="fixed bottom-0 left-0 lg:top-0 lg:bottom-auto z-40 w-full flex justify-start items-baseline flex-wrap font-monumentMedium text-2xl lg:text-6xl p-0.5 gap-0.5">
         {/* Brand name */}
         <motion.div
           key={`box1-${box1Label}`}
@@ -54,7 +54,7 @@ export default function FloatingNav() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-end lg:flex-row lg:flex-wrap lg:items-start lg:justify-start z-50 gap-0.5 p-1 lg:h-auto"
+            className="fixed inset-0 bg-black bg-opacity-90 flex flex-col items-end justify-end lg:flex-row lg:flex-wrap lg:items-start lg:justify-start z-50 gap-0.5 p-1 lg:h-auto"
           >
             {navItems.map((item) => (
               <Link
